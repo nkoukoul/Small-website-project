@@ -1,0 +1,49 @@
+
+  <div>
+    <p>{{ movie.title }}</p>
+    <p>
+      Posted by
+      {% if current_user.username == movie.author.username %}
+      <a href="{{ url_for('user', username=movie.author.username) }}">You</a> 
+      {% else %}
+      <a href="{{ url_for('user', username=movie.author.username) }}">{{ movie.author.username }}</a> 
+      {% endif %}
+      {% if (now-movie.timestamp).days == 0 %}
+      today
+      {% else %}
+      {{ (now-movie.timestamp).days }} days ago
+      {% endif %}
+    </p>
+    <p>{{ movie.description }}</p>
+      {% if current_user.username == movie.author.username or current_user.is_anonymous %}
+        {% if movie.get_fans() != 0 or movie.get_haters() != 0 %}
+        <p>{{ movie.get_fans() }} likes | {{ movie.get_haters() }} hates</p>
+	{% endif %}
+      {% else %}
+      <p>
+	{% if movie.get_fans() == 0 and movie.get_haters() == 0 %}
+	Be the first to vote for this movie:
+	<a href="{{ url_for('like', moviename=movie.title) }}">Like</a> | 
+	<a href="{{ url_for('hate', moviename=movie.title) }}">Hate</a>
+	{% else %}
+	  {% if current_user.does_like(movie) %}
+	  {{ movie.get_fans() }} likes |
+	  {% else %}
+	  <a href="{{ url_for('like', moviename=movie.title) }}">{{ movie.get_fans() }} likes</a> | 
+	  {% endif %}
+	  {% if current_user.does_hate(movie) %}
+	  {{ movie.get_haters() }} hates
+	  {% else %}
+          <a href="{{ url_for('hate', moviename=movie.title) }}">{{ movie.get_haters() }} hates</a>
+	  {% endif %}
+	  {% if current_user.does_like(movie) %}
+	  You like this movie| <a href="{{ url_for('unlike', moviename=movie.title) }}"> Unlike</a> 
+	  {% endif %}
+	  {% if current_user.does_hate(movie) %}
+	  You hate this movie| <a href="{{ url_for('unhate', moviename=movie.title) }}"> Unhate</a> 
+	  {% endif %}
+	  </p>
+	{% endif %}
+      {% endif %}
+  </div>
+  <hr>

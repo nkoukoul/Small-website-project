@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+  <p> 
+    Sort by:  
+    <a href="{{ url_for('u_sort', username=this_user, value=0) }}">Likes</a> | 
+    <a href="{{ url_for('u_sort', username=this_user, value=1) }}">Hates</a> | 
+    <a href="{{ url_for('u_sort', username=this_user, value=2) }}">Date</a> 
+  </p>
+  <hr>
+  {% for movie in movies %}
+    {% include '_movie.html' %}
+  {% endfor %}
+{% endblock %}
